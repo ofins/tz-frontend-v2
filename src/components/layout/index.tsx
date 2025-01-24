@@ -2,7 +2,11 @@ import type { PropsWithChildren } from "react";
 import { Breadcrumb } from "../breadcrumb";
 import { Menu } from "../menu";
 
-export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
+interface Props {
+  children?: React.ReactNode;
+}
+
+export const Layout: React.FC<PropsWithChildren> = ({ children }:Props) => {
   return (
     <div className="layout">
       <Menu />

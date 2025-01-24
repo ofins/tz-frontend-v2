@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 const TokenShow = () => {
-  return <div>TokenShow</div>;
-};
+  return <div>TokenShow</div>
+}
 
-export default TokenShow;
+export default TokenShow

@@ -1,19 +1,14 @@
-import type { PropsWithChildren } from "react";
-import { Breadcrumb } from "../breadcrumb";
-import { Menu } from "../menu";
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { AppSidebar } from '../app-sidebar'
 
-interface Props {
-  children?: React.ReactNode;
-}
-
-export const Layout: React.FC<PropsWithChildren> = ({ children }:Props) => {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="layout">
-      <Menu />
-      <div className="content">
-        <Breadcrumb />
-        <div>{children}</div>
-      </div>
-    </div>
-  );
-};
+    <SidebarProvider>
+      <AppSidebar />
+      <main>
+        <SidebarTrigger />
+        {children}
+      </main>
+    </SidebarProvider>
+  )
+}

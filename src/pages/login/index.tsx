@@ -1,26 +1,11 @@
-import { AuthPage } from "@refinedev/core";
+import { LoginForm } from '@/components/login-form'
 
 export const Login = () => {
   return (
-    <AuthPage
-      type="login"
-      renderContent={(content) => (
-        <div>
-          <p
-            style={{
-              padding: 10,
-              color: "#004085",
-              backgroundColor: "#cce5ff",
-              borderColor: "#b8daff",
-              textAlign: "center",
-            }}
-          >
-            email: demo@refine.dev
-            <br /> password: demodemo
-          </p>
-          {content}
-        </div>
-      )}
-    />
-  );
-};
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <LoginForm />
+      </div>
+    </div>
+  )
+}

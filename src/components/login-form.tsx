@@ -24,6 +24,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  defaultValue={'super@example.com'}
                   required
                 />
               </div>
@@ -41,6 +42,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   id="password"
                   type="password"
                   required
+                  defaultValue={'string'}
                 />
               </div>
               <Button

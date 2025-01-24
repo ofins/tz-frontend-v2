@@ -2,7 +2,6 @@ import { Authenticated, ErrorComponent, Refine } from '@refinedev/core'
 import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar'
 
 import routerBindings, { CatchAllNavigate, DocumentTitleHandler, NavigateToResource, UnsavedChangesNotifier } from '@refinedev/react-router'
-import dataProvider from '@refinedev/simple-rest'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router'
 import './App.css'
 import { authProvider } from './authProvider'
@@ -13,6 +12,8 @@ import { Login } from './pages/login'
 import { Register } from './pages/register'
 import TokenList from './pages/token/list'
 import TokenShow from './pages/token/show'
+import { dataProvider } from './providers/dataProvider'
+import { $axios } from './services/axios'
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
       <BrowserRouter>
         <RefineKbarProvider>
           <Refine
-            dataProvider={dataProvider('https://api.fake-rest.refine.dev')}
+            dataProvider={dataProvider(import.meta.env.VITE_TAMA_BACKEND_URL, $axios)}
             routerProvider={routerBindings}
             authProvider={authProvider}
             resources={[
@@ -40,9 +41,6 @@ function App() {
               projectId: 'wj67ld-3GCfsU-W4TYAb',
             }}
           >
-            {/* <Routes>
-            <Route index element={<WelcomePage />} />
-          </Routes> */}
             <Routes>
               <Route
                 element={
@@ -50,30 +48,13 @@ function App() {
                     key="authenticated-inner"
                     fallback={<CatchAllNavigate to="/login" />}
                   >
-                    {/* <ThemedLayoutV2
-                        Header={Header}
-                        Sider={() => (
-                          <ThemedSiderV2
-                            Title={() => (
-                              <span style={{ fontWeight: 700, fontSize: 18 }}>
-                                Tama Zoo
-                              </span>
-                            )}
-                          />
-                        )}
-                      >
-                        <Outlet />
-                      </ThemedLayoutV2> */}
                     <Layout>
                       <Outlet />
                     </Layout>
                   </Authenticated>
                 }
               >
-                <Route
-                  index
-                  element={<NavigateToResource resource="tokens" />}
-                />
+                <Route element={<NavigateToResource resource="/" />} />
                 <Route path="/tokens">
                   <Route
                     index

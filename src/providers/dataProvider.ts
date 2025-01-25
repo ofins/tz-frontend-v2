@@ -14,22 +14,22 @@ export const dataProvider = (
   getList: async ({ resource, pagination, filters, sorters, meta }) => {
     const url = `${apiUrl}/${resource}`
 
-    const { current: page = 1, pageSize: limit = 25, mode = 'server' } = pagination ?? {}
-
+    const { current = 1, pageSize = 25, mode = 'server' } = pagination ?? {}
+    console.log(pageSize)
     const { headers: headersFromMeta, method } = meta ?? {}
     const requestMethod = (method as MethodTypes) ?? 'get'
     const queryFilters = generateFilter(filters)
 
     const query: {
-      limit?: number
-      page?: number
+      pageSize?: number
+      current?: number
       sortBy?: string
       orderBy?: string
     } = {}
 
     if (mode === 'server') {
-      query.page = page
-      query.limit = meta?.pageSize ?? limit //pageSize arg doesn't work in useDataGrid, pass as meta instead
+      query.current = current
+      query.pageSize = pageSize
     }
 
     const generatedSort = generateSort(sorters)

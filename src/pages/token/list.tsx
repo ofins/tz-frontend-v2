@@ -1,101 +1,186 @@
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useTable } from '@refinedev/core'
+import { RoutesEnum } from '@/enums/routes.enum'
+import { MC_CONSTANT } from '@/utils/common'
+import { useTable } from '@refinedev/react-table'
+import { type ColumnDef, flexRender } from '@tanstack/react-table'
+import { Flame, Moon, Rocket } from 'lucide-react'
+import { useEffect, useMemo } from 'react'
+
+interface TokenListProps {
+  ticker: string
+  address: string
+  name: string
+  description: string
+  imageUrl: string
+  lastMcap: number
+  createdAt: string
+  User: { name: string }
+}
 
 const TokenList = () => {
-  // const { tableProps } = useTable<IPost>()
+  const columns = useMemo<ColumnDef<TokenListProps>[]>(
+    () => [
+      {
+        id: 'ticker',
+        header: 'Ticker',
+        accessorKey: 'ticker',
+        cell: ({ getValue }) => {
+          const value = getValue()
+          return (
+            <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">{value as string}</code>
+          )
+        },
+      },
+      {
+        id: 'address',
+        header: 'Address',
+        accessorKey: 'address',
+      },
+      {
+        id: 'name',
+        header: 'Name',
+        accessorKey: 'name',
+      },
+      {
+        id: 'description',
+        header: 'Description',
+        accessorKey: 'description',
+      },
+      {
+        id: 'imageUrl',
+        header: 'Image',
+        accessorKey: 'imageUrl',
+        cell: ({ getValue }) => {
+          const value = getValue()
+          return value ? (
+            <img
+              src={`https://gateway.pinata.cloud/ipfs/${value}`}
+              alt={`Token Image: ${value}`}
+              className="h-5"
+              onError={(e) => {
+                e.currentTarget.src = ''
+                e.currentTarget.alt = 'No Image'
+                e.currentTarget.style.display = 'none'
+              }}
+            />
+          ) : (
+            'No Image'
+          )
+        },
+      },
+      {
+        id: 'lastMcap',
+        header: 'Market Cap',
+        accessorKey: 'lastMcap',
+        cell: ({ getValue }) => {
+          const value = Number(((getValue() as number) * MC_CONSTANT).toFixed())
+          return (
+            <div className="flex items-center justify-start overflow-hidden truncate whitespace-nowrap">
+              {value}
+              {value > 10000 && <Flame className="h-4" />}
+              {value > 30000 && <Rocket className="h-4" />}
+              {value > 50000 && <Moon className="h-4" />}
+            </div>
+          )
+        },
+      },
+      {
+        id: 'createdAt',
+        header: 'Created At',
+        accessorKey: 'createdAt',
+        cell: ({ getValue }) => {
+          const date = getValue() as string
+          return <span>{new Date(date).toLocaleString('en-US')}</span>
+        },
+      },
+      {
+        id: 'user',
+        header: 'User',
+        accessorKey: 'User.name',
+      },
+    ],
+    []
+  )
 
-  const { tableQuery, current, setCurrent } = useTable({
-    resource: 'v1/services/tokens',
+  const { getHeaderGroups, getRowModel, getState, nextPage, previousPage, setPageSize } = useTable({
+    columns,
+    refineCoreProps: {
+      resource: RoutesEnum.TOKENS,
+    },
   })
 
-  const { data, isLoading } = tableQuery
-
-  // const total = data?.total || 0
-  // const tokens = data?.data || []
+  useEffect(() => {
+    setPageSize(20)
+  }, [])
 
   return (
-    <div className="space-y-4">
-      <Table className="table-auto">
-        <TableCaption>List of Tokens</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Ticker</TableHead>
-            <TableHead>Address</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Image</TableHead>
-            <TableHead>Market Cap</TableHead>
-            <TableHead>Created At</TableHead>
-            <TableHead>User</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isLoading ? (
-            <TableRow>
-              <TableCell
-                colSpan={9}
-                className="text-center"
-              >
-                Loading...
-              </TableCell>
-            </TableRow>
-          ) : (
-            data?.data.map((token) => (
-              <TableRow key={token.id}>
-                <TableCell>{token.ticker}</TableCell>
-                <TableCell>{token.address}</TableCell>
-                <TableCell>{token.name}</TableCell>
-                <TableCell>{token.description}</TableCell>
-                <TableCell>
-                  {token.image && (
-                    <img
-                      src={token.image}
-                      alt={token.name}
-                      className="h-10 w-10"
-                    />
-                  )}
-                </TableCell>
-                <TableCell>{token.marketCap}</TableCell>
-                <TableCell>{new Date(token.createdAt).toLocaleDateString()}</TableCell>
-                <TableCell>{token.user}</TableCell>
-                <TableCell className="text-right">{token.amount}</TableCell>
+    <div className="max-w-screen w-full overflow-x-auto">
+      <div className="mx-auto w-[99%] space-y-4">
+        <Table className="w-full table-fixed border-collapse border text-xs">
+          <TableCaption>Most recent launched tokens</TableCaption>
+          <TableHeader>
+            {getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>{flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
+                ))}
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              onClick={() => setCurrent((prev) => Math.max(prev - 1, 1))}
-            />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">{current}</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              onClick={() => setCurrent((prev) => prev + 1)}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {getRowModel().rows.length > 0 ? (
+              getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className="overflow-hidden truncate whitespace-nowrap"
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={getHeaderGroups()[0]?.headers.length || 1}
+                  className="text-center"
+                >
+                  No data available
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={() => previousPage()}
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">{getState().pagination.pageIndex}</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={() => nextPage()}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   )
 }

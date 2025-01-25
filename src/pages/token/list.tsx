@@ -46,7 +46,7 @@ const TokenList = () => {
                 <HoverCardTrigger>
                   <code
                     onClick={() => show('tokens', row.original.address)}
-                    className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
+                    className="relative cursor-pointer rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
                   >
                     {value}
                   </code>

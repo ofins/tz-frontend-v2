@@ -57,7 +57,10 @@ function App() {
                   </Authenticated>
                 }
               >
-                <Route element={<NavigateToResource resource="/tokens" />} />
+                <Route
+                  index
+                  element={<NavigateToResource resource="tokens" />}
+                />
                 <Route path="/tokens">
                   <Route
                     index

@@ -35,7 +35,10 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup className="h-full">
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Tama Zoo</h1>
+          <div className="my-1" />
+          <small className="ml-auto text-xs text-muted-foreground">ver {import.meta.env.VITE_REACT_APP_VERSION} beta</small>
+          <SidebarGroupLabel>Applications</SidebarGroupLabel>
           <SidebarGroupContent className="relative h-full">
             <SidebarMenu>
               {items.map((item) => (

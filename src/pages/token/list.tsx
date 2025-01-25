@@ -17,6 +17,7 @@ import { useTable } from '@refinedev/react-table'
 import { type ColumnDef, flexRender } from '@tanstack/react-table'
 import { ExternalLinkIcon, Flame, Moon, Rocket } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
+import CreatorInfo from './creator-info'
 
 interface TokenListProps {
   ticker: string
@@ -26,7 +27,7 @@ interface TokenListProps {
   imageUrl: string
   lastMcap: number
   createdAt: string
-  User: { name: string }
+  User: { name: string; address: string }
 }
 
 const TokenList = () => {
@@ -131,6 +132,19 @@ const TokenList = () => {
         id: 'user',
         header: 'User',
         accessorKey: 'User.name',
+        cell: ({ getValue, row }) => {
+          const value = getValue() as string
+          return (
+            <HoverCard>
+              <HoverCardTrigger>
+                <span>{value}</span>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-fit">
+                <CreatorInfo address={row.original.User.address} />
+              </HoverCardContent>
+            </HoverCard>
+          )
+        },
       },
     ],
     [isMobile]

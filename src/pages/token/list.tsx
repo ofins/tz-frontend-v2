@@ -110,11 +110,30 @@ const TokenList = () => {
     []
   )
 
-  const { getHeaderGroups, getRowModel, getState, nextPage, previousPage, setPageSize } = useTable({
+  const {
+    getHeaderGroups,
+    getRowModel,
+    getState,
+    nextPage,
+    previousPage,
+    setPageSize,
+    refineCore: {
+      tableQueryResult: { refetch, isLoading },
+    },
+  } = useTable({
     columns,
     refineCoreProps: {
       resource: RoutesEnum.TOKENS,
     },
+  })
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetch()
+      console.log('refetch', new Date().getTime())
+    }, 60000)
+
+    return () => clearInterval(interval)
   })
 
   useEffect(() => {
@@ -124,6 +143,12 @@ const TokenList = () => {
   return (
     <div className="max-w-screen w-full overflow-x-auto">
       <div className="mx-auto w-[99%] space-y-4">
+        <p className="text-sm text-muted-foreground">{`last updated: ${new Date().toLocaleString('en-US')}`}</p>
+        {isLoading && (
+          <p className="text-md font-semibold">
+            Just a broke dev using free hosting service. Spin-up can take as long as 30 seconds. Please be patient ❤️
+          </p>
+        )}
         <Table className="w-full table-fixed border-collapse border text-xs">
           <TableCaption>Most recent launched tokens</TableCaption>
           <TableHeader>

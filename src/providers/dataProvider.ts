@@ -15,7 +15,6 @@ export const dataProvider = (
     const url = `${apiUrl}/${resource}`
 
     const { current = 1, pageSize = 25, mode = 'server' } = pagination ?? {}
-    console.log(pageSize)
     const { headers: headersFromMeta, method } = meta ?? {}
     const requestMethod = (method as MethodTypes) ?? 'get'
     const queryFilters = generateFilter(filters)

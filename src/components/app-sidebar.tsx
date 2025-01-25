@@ -1,4 +1,4 @@
-import { Coins, Home } from 'lucide-react'
+import { Coins } from 'lucide-react'
 
 import {
   Sidebar,
@@ -14,11 +14,11 @@ import { ModeToggle } from './mode-toggle'
 
 // Menu items.
 const items = [
-  {
-    title: 'Home',
-    url: '/',
-    icon: Home,
-  },
+  // {
+  //   title: 'Home',
+  //   url: '/',
+  //   icon: Home,
+  // },
   {
     title: 'Tokens',
     url: '/tokens',
@@ -30,7 +30,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup className="h-full">
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent className="h-full">
             <SidebarMenu>
@@ -44,7 +44,20 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              <ModeToggle />
+              <div className="fixed bottom-1 flex items-end justify-start gap-3">
+                <ModeToggle />
+                <p className="leading-7">
+                  Built by{' '}
+                  <a
+                    href="https://x.com/ofinsNFT"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-primary"
+                  >
+                    ofins.ron
+                  </a>
+                </p>
+              </div>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

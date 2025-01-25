@@ -7,6 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { RoutesEnum } from '@/enums/routes.enum'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -145,6 +146,7 @@ const TokenList = () => {
     refineCore: {
       tableQueryResult: { refetch, isLoading },
       setFilters,
+      filters,
     },
   } = useTable({
     columns,
@@ -189,8 +191,29 @@ const TokenList = () => {
           </p>
         )}
         <small className="text-sm font-medium leading-none">Navigate Ronin meme coins easily.</small>
-        <p className="text-xs">Updates automatically every minute. Never miss a pump.</p>
+        <p className="text-xs">Updates automatically every minute. Never miss a pump. 🚀</p>
         <p className="text-sm text-muted-foreground">{`last updated: ${new Date().toLocaleString('en-US')}`}</p>
+        <Select
+          value={filters?.find((f) => (f as any).field === 'sortBy')?.value}
+          onValueChange={(value) => {
+            setFilters((prev) => {
+              const updatedFilters = prev.filter((filter) => (filter as any).field !== 'sortBy')
+              updatedFilters.push({ field: 'sortBy', operator: 'eq', value })
+              return updatedFilters
+            })
+          }}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sort" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="featured">Featured</SelectItem>
+            <SelectItem value="lastMcap">Market cap</SelectItem>
+            <SelectItem value="createdAt">Recently launched</SelectItem>
+            <SelectItem value="lastBuy">Last bumped</SelectItem>
+            <SelectItem value="lastComment">Last replied</SelectItem>
+          </SelectContent>
+        </Select>
         <Table className="w-full table-fixed border-collapse border text-xs">
           <TableCaption>Most recent launched tokens</TableCaption>
           <TableHeader>

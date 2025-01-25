@@ -20,6 +20,7 @@ const ProfileCard = () => {
         <p className="text-xs">
           Welcome to <span className="text-md text-primary">Tama Zoo</span> – created and maintained by ofins.ron
         </p>
+        <p className="text-xs text-destructive">Issues or suggestions? DM me on X!</p>
         <p className="text-xs text-muted-foreground">
           If you like it, buy me a{' '}
           <a

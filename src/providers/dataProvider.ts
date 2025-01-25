@@ -37,7 +37,6 @@ export const dataProvider = (
       query.sortBy = _sort.join(',')
       query.orderBy = _order.join(',')
     }
-    console.log(query)
 
     const combinedQuery = { ...query, ...queryFilters }
     const urlWithQuery = Object.keys(combinedQuery).length ? `${url}?${stringify(combinedQuery)}` : url

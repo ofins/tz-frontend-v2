@@ -66,7 +66,8 @@ export function AppSidebar() {
                         className="text-primary"
                       >
                         ofins.ron
-                      </a>
+                      </a>{' '}
+                      🦙
                     </p>
                   </HoverCardTrigger>
                   <HoverCardContent className="w-80">

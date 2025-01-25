@@ -45,8 +45,6 @@ const TokenShow = () => {
     ],
   })
 
-  console.log(holder?.data[0].holderAddress.name)
-
   return (
     <div className="h-full w-full px-2">
       <Breadcrumb>
@@ -79,7 +77,7 @@ const TokenShow = () => {
             ></iframe>
           </div>
         </div>
-        <div className="flex flex-col gap-3">
+        <div className="flex max-w-[800px] flex-col gap-3">
           <Card className="h-fit w-full p-3">
             <div className="flex items-center justify-between">
               <h1 className="text-lg font-semibold">Token Info</h1>

@@ -135,6 +135,20 @@ const TokenList = () => {
     columns,
     refineCoreProps: {
       resource: RoutesEnum.TOKENS,
+      filters: {
+        initial: [
+          {
+            field: 'sortBy',
+            operator: 'eq',
+            value: 'createdAt',
+          },
+          {
+            field: 'sortDirection',
+            operator: 'eq',
+            value: 'desc',
+          },
+        ],
+      },
     },
   })
 
@@ -156,12 +170,14 @@ const TokenList = () => {
   return (
     <div className="max-w-screen w-full overflow-x-auto">
       <div className="mx-auto w-[99%] space-y-4">
-        <p className="text-sm text-muted-foreground">{`last updated: ${new Date().toLocaleString('en-US')}`}</p>
         {isLoading && (
           <p className="text-md font-semibold">
             Just a broke dev using free hosting service. Spin-up can take as long as 30 seconds. Please be patient ❤️
           </p>
         )}
+        <small className="text-sm font-medium leading-none">Navigate Ronin's meme coins easily.</small>
+        <p className="text-xs">Updates automatically every minute. Never miss a pump.</p>
+        <p className="text-sm text-muted-foreground">{`last updated: ${new Date().toLocaleString('en-US')}`}</p>
         <Table className="w-full table-fixed border-collapse border text-xs">
           <TableCaption>Most recent launched tokens</TableCaption>
           <TableHeader>

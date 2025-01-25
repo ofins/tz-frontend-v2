@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/pagination'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { RoutesEnum } from '@/enums/routes.enum'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { MC_CONSTANT } from '@/utils/common'
 import { useTable } from '@refinedev/react-table'
 import { type ColumnDef, flexRender } from '@tanstack/react-table'
@@ -26,16 +27,26 @@ interface TokenListProps {
 }
 
 const TokenList = () => {
+  const isMobile = useIsMobile()
+
   const columns = useMemo<ColumnDef<TokenListProps>[]>(
     () => [
       {
         id: 'ticker',
         header: 'Ticker',
         accessorKey: 'ticker',
-        cell: ({ getValue }) => {
-          const value = getValue()
+        cell: ({ getValue, row }) => {
+          const value = getValue() as string
           return (
-            <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">{value as string}</code>
+            <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
+              <a
+                href={`https://tama.meme/token/${row.original.address}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {value}
+              </a>
+            </code>
           )
         },
       },
@@ -56,7 +67,7 @@ const TokenList = () => {
       },
       {
         id: 'imageUrl',
-        header: 'Image',
+        header: 'Avatar',
         accessorKey: 'imageUrl',
         cell: ({ getValue }) => {
           const value = getValue()
@@ -97,8 +108,8 @@ const TokenList = () => {
         header: 'Created At',
         accessorKey: 'createdAt',
         cell: ({ getValue }) => {
-          const date = getValue() as string
-          return <span>{new Date(date).toLocaleString('en-US')}</span>
+          const date = new Date(getValue() as string)
+          return <span>{isMobile ? date.toLocaleDateString() : date.toLocaleString()}</span>
         },
       },
       {
@@ -107,7 +118,7 @@ const TokenList = () => {
         accessorKey: 'User.name',
       },
     ],
-    []
+    [isMobile]
   )
 
   const {
@@ -137,8 +148,10 @@ const TokenList = () => {
   })
 
   useEffect(() => {
-    setPageSize(20)
-  }, [])
+    setPageSize(isMobile ? 15 : 20)
+  }, [isMobile])
+
+  const excludeColumnsInMobile = ['description', 'name', 'address', 'user']
 
   return (
     <div className="max-w-screen w-full overflow-x-auto">
@@ -154,9 +167,10 @@ const TokenList = () => {
           <TableHeader>
             {getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>{flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  if (isMobile && excludeColumnsInMobile.includes(header.id)) return
+                  return <TableHead key={header.id}>{flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
+                })}
               </TableRow>
             ))}
           </TableHeader>
@@ -164,14 +178,19 @@ const TokenList = () => {
             {getRowModel().rows.length > 0 ? (
               getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className="overflow-hidden truncate whitespace-nowrap"
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    if (isMobile && excludeColumnsInMobile.includes(cell.column.id)) {
+                      return
+                    }
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        className="overflow-hidden truncate whitespace-nowrap"
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    )
+                  })}
                 </TableRow>
               ))
             ) : (
@@ -195,7 +214,7 @@ const TokenList = () => {
               />
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink href="#">{getState().pagination.pageIndex}</PaginationLink>
+              <PaginationLink href="#">{getState().pagination.pageIndex + 1}</PaginationLink>
             </PaginationItem>
             <PaginationItem>
               <PaginationNext

@@ -3,6 +3,7 @@ import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar'
 
 import routerBindings, { CatchAllNavigate, DocumentTitleHandler, NavigateToResource, UnsavedChangesNotifier } from '@refinedev/react-router'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router'
 import { authProvider } from './authProvider'
 import Layout from './components/layout'
@@ -23,6 +24,7 @@ function App() {
     >
       <BrowserRouter>
         <Analytics />
+        <SpeedInsights />
         <RefineKbarProvider>
           <Refine
             dataProvider={dataProvider(import.meta.env.VITE_TAMA_BACKEND_URL, $axios)}

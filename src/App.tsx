@@ -2,6 +2,7 @@ import { Authenticated, ErrorComponent, Refine } from '@refinedev/core'
 import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar'
 
 import routerBindings, { CatchAllNavigate, DocumentTitleHandler, NavigateToResource, UnsavedChangesNotifier } from '@refinedev/react-router'
+import { Analytics } from '@vercel/analytics/react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router'
 import { authProvider } from './authProvider'
 import Layout from './components/layout'
@@ -21,6 +22,7 @@ function App() {
       storageKey="vite-ui-theme"
     >
       <BrowserRouter>
+        <Analytics />
         <RefineKbarProvider>
           <Refine
             dataProvider={dataProvider(import.meta.env.VITE_TAMA_BACKEND_URL, $axios)}

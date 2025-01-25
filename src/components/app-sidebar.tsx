@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { APP_VERSION } from '@/utils/common'
 import { ModeToggle } from './mode-toggle'
 import ProfileCard from './profile-card'
 import { Card } from './ui/card'
@@ -37,7 +38,7 @@ export function AppSidebar() {
         <SidebarGroup className="h-full">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Tama Zoo</h1>
           <div className="my-1" />
-          <small className="ml-auto text-xs text-muted-foreground">ver {import.meta.env.VITE_REACT_APP_VERSION} beta</small>
+          <small className="ml-auto text-xs text-muted-foreground">ver {APP_VERSION} beta</small>
           <SidebarGroupLabel>Applications</SidebarGroupLabel>
           <SidebarGroupContent className="relative h-full">
             <SidebarMenu>

@@ -1,4 +1,6 @@
+import { Button } from '@/components/ui/button'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+import { Input } from '@/components/ui/input'
 import {
   Pagination,
   PaginationContent,
@@ -16,7 +18,7 @@ import { useNavigation } from '@refinedev/core'
 import { useTable } from '@refinedev/react-table'
 import { type ColumnDef, flexRender } from '@tanstack/react-table'
 import { ExternalLinkIcon, Flame, Moon, Rocket } from 'lucide-react'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import CreatorInfo from './creator-info'
 
 interface TokenListProps {
@@ -33,6 +35,7 @@ interface TokenListProps {
 const TokenList = () => {
   const isMobile = useIsMobile()
   const { show } = useNavigation()
+  const [searchTerm, setSearchTerm] = useState('')
 
   const columns = useMemo<ColumnDef<TokenListProps>[]>(
     () => [
@@ -196,6 +199,16 @@ const TokenList = () => {
 
   const excludeColumnsInMobile = ['description', 'name', 'address', 'user']
 
+  const handleSearch = () => {
+    setFilters([
+      {
+        field: 'searchTerm',
+        operator: 'eq',
+        value: searchTerm,
+      },
+    ])
+  }
+
   return (
     <div className="max-w-screen w-full overflow-x-auto">
       <div className="mx-auto w-[99%] space-y-4">
@@ -207,27 +220,38 @@ const TokenList = () => {
         <small className="text-sm font-medium leading-none">Navigate Ronin meme coins easily.</small>
         <p className="text-xs">Updates automatically every minute. Never miss a pump. 🚀</p>
         <p className="text-sm text-muted-foreground">{`last updated: ${new Date().toLocaleString('en-US')}`}</p>
-        <Select
-          value={filters?.find((f) => (f as any).field === 'sortBy')?.value}
-          onValueChange={(value) => {
-            setFilters((prev) => {
-              const updatedFilters = prev.filter((filter) => (filter as any).field !== 'sortBy')
-              updatedFilters.push({ field: 'sortBy', operator: 'eq', value })
-              return updatedFilters
-            })
-          }}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="lastFeatured">Featured</SelectItem>
-            <SelectItem value="lastMcap">Market cap</SelectItem>
-            <SelectItem value="createdAt">Recently launched</SelectItem>
-            <SelectItem value="lastBuy">Last bumped</SelectItem>
-            <SelectItem value="lastComment">Last replied</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex space-x-2">
+          <Select
+            value={filters?.find((f) => (f as any).field === 'sortBy')?.value}
+            onValueChange={(value) => {
+              setFilters((prev) => {
+                const updatedFilters = prev.filter((filter) => (filter as any).field !== 'sortBy')
+                updatedFilters.push({ field: 'sortBy', operator: 'eq', value })
+                return updatedFilters
+              })
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Sort" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="lastFeatured">Featured</SelectItem>
+              <SelectItem value="lastMcap">Market cap</SelectItem>
+              <SelectItem value="createdAt">Recently launched</SelectItem>
+              <SelectItem value="lastBuy">Last bumped</SelectItem>
+              <SelectItem value="lastComment">Last replied</SelectItem>
+            </SelectContent>
+          </Select>
+          <Input
+            type="string"
+            placeholder="search by ticker"
+            className="w-[180px]"
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            value={searchTerm}
+          />
+          <Button onClick={() => handleSearch()}>Search</Button>
+        </div>
         <Table className="w-full table-fixed border-collapse border text-xs">
           <TableCaption>Most recent launched tokens</TableCaption>
           <TableHeader>

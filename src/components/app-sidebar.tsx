@@ -1,4 +1,4 @@
-import { Coins } from 'lucide-react'
+import { Coins, Eye } from 'lucide-react'
 
 import {
   Sidebar,
@@ -28,6 +28,11 @@ const items = [
     title: 'Tokens',
     url: '/tokens',
     icon: Coins,
+  },
+  {
+    title: 'Watchlist',
+    url: '/watchlist',
+    icon: Eye,
   },
 ]
 

@@ -10,6 +10,7 @@ import Layout from './components/layout'
 import { ThemeProvider } from './components/theme-provider'
 import TokenList from './pages/token/list'
 import TokenShow from './pages/token/show'
+import WatchList from './pages/watchlist/list'
 import { dataProvider } from './providers/dataProvider'
 import { $axios } from './services/axios'
 
@@ -32,6 +33,11 @@ function App() {
                 name: 'tokens',
                 list: '/tokens',
                 show: '/tokens/show/:id',
+              },
+              {
+                name: 'watchlist',
+                list: '/watchlist',
+                show: '/watchlist/show/:id',
               },
             ]}
             options={{
@@ -67,6 +73,16 @@ function App() {
                     path="show/:id"
                     element={<TokenShow />}
                   />
+                </Route>
+                <Route path="/watchlist">
+                  <Route
+                    index
+                    element={<WatchList />}
+                  />
+                  {/* <Route
+                    path="show/:id"
+                    element={<TokenShow />}
+                  /> */}
                 </Route>
                 <Route
                   path="*"

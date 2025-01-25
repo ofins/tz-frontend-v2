@@ -1,16 +1,13 @@
-import { Authenticated, ErrorComponent, Refine } from '@refinedev/core'
+import { ErrorComponent, Refine } from '@refinedev/core'
 import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar'
 
-import routerBindings, { CatchAllNavigate, DocumentTitleHandler, NavigateToResource, UnsavedChangesNotifier } from '@refinedev/react-router'
+import routerBindings, { DocumentTitleHandler, NavigateToResource, UnsavedChangesNotifier } from '@refinedev/react-router'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router'
 import { authProvider } from './authProvider'
 import Layout from './components/layout'
 import { ThemeProvider } from './components/theme-provider'
-import { ForgotPassword } from './pages/forgotPassword'
-import { Login } from './pages/login'
-import { Register } from './pages/register'
 import TokenList from './pages/token/list'
 import TokenShow from './pages/token/show'
 import { dataProvider } from './providers/dataProvider'
@@ -47,14 +44,14 @@ function App() {
             <Routes>
               <Route
                 element={
-                  <Authenticated
-                    key="authenticated-inner"
-                    fallback={<CatchAllNavigate to="/login" />}
-                  >
-                    <Layout>
-                      <Outlet />
-                    </Layout>
-                  </Authenticated>
+                  // <Authenticated
+                  //   key="authenticated-inner"
+                  //   fallback={<CatchAllNavigate to="/login" />}
+                  // >
+                  <Layout>
+                    <Outlet />
+                  </Layout>
+                  // </Authenticated>
                 }
               >
                 <Route
@@ -66,8 +63,6 @@ function App() {
                     index
                     element={<TokenList />}
                   />
-                  {/* <Route path="create" element={<BlogPostCreate />} /> */}
-                  {/* <Route path="edit/:id" element={<BlogPostEdit />} /> */}
                   <Route
                     path="show/:id"
                     element={<TokenShow />}
@@ -78,7 +73,7 @@ function App() {
                   element={<ErrorComponent />}
                 />
               </Route>
-              <Route
+              {/* <Route
                 element={
                   <Authenticated
                     key="authenticated-outer"
@@ -100,7 +95,7 @@ function App() {
                   path="/forgot-password"
                   element={<ForgotPassword />}
                 />
-              </Route>
+              </Route> */}
             </Routes>
             <RefineKbar />
             <UnsavedChangesNotifier />

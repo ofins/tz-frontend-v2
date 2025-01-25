@@ -1,8 +1,8 @@
 # TamaZoo-frontend-v2
 
 <div align="center" style="margin: 30px;">
-    <a href="https://refine.dev">
-    <img alt="refine logo" src="https://refine.ams3.cdn.digitaloceanspaces.com/readme/refine-readme-banner.png">
+    <a href="https://tamazoo.vercel.app">
+    <img alt="refine logo" src="https://black-changing-salmon-202.mypinata.cloud/ipfs/QmS3rvKkM5HW2ZgS4BLJtBUMK6aTq9RLPHQuThf65SMfPg?img-width=128&img-height=128&img-dpr=2&img-onerror=redirect">
     </a>
 </div>
 <br/>

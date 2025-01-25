@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/sidebar'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { APP_VERSION } from '@/utils/common'
+import { useNavigation } from '@refinedev/core'
 import { ModeToggle } from './mode-toggle'
 import ProfileCard from './profile-card'
 import { Card } from './ui/card'
@@ -32,11 +33,17 @@ const items = [
 
 export function AppSidebar() {
   const isMobile = useIsMobile()
+  const { list } = useNavigation()
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup className="h-full">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Tama Zoo</h1>
+          <h1
+            className="cursor-pointer scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl"
+            onClick={() => list('tokens')}
+          >
+            Tama Zoo
+          </h1>
           <div className="my-1" />
           <small className="ml-auto text-xs text-muted-foreground">ver {APP_VERSION} beta</small>
           <SidebarGroupLabel>Applications</SidebarGroupLabel>

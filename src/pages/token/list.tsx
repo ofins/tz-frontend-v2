@@ -89,7 +89,7 @@ const TokenList = () => {
           const value = getValue()
           return value ? (
             <img
-              src={`https://gateway.pinata.cloud/ipfs/${value}`}
+              src={`https://black-changing-salmon-202.mypinata.cloud/ipfs/${value}`}
               alt={`Token Image: ${value}`}
               className="h-5"
               onError={(e) => {
@@ -221,7 +221,7 @@ const TokenList = () => {
             <SelectValue placeholder="Sort" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="featured">Featured</SelectItem>
+            <SelectItem value="lastFeatured">Featured</SelectItem>
             <SelectItem value="lastMcap">Market cap</SelectItem>
             <SelectItem value="createdAt">Recently launched</SelectItem>
             <SelectItem value="lastBuy">Last bumped</SelectItem>

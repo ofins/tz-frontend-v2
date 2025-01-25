@@ -1,3 +1,4 @@
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import {
   Pagination,
   PaginationContent,
@@ -10,9 +11,10 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { RoutesEnum } from '@/enums/routes.enum'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { MC_CONSTANT } from '@/utils/common'
+import { useNavigation } from '@refinedev/core'
 import { useTable } from '@refinedev/react-table'
 import { type ColumnDef, flexRender } from '@tanstack/react-table'
-import { Flame, Moon, Rocket } from 'lucide-react'
+import { ExternalLinkIcon, Flame, Moon, Rocket } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 
 interface TokenListProps {
@@ -28,6 +30,7 @@ interface TokenListProps {
 
 const TokenList = () => {
   const isMobile = useIsMobile()
+  const { show } = useNavigation()
 
   const columns = useMemo<ColumnDef<TokenListProps>[]>(
     () => [
@@ -38,15 +41,26 @@ const TokenList = () => {
         cell: ({ getValue, row }) => {
           const value = getValue() as string
           return (
-            <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
+            <div className="flex justify-between">
+              <HoverCard>
+                <HoverCardTrigger>
+                  <code
+                    onClick={() => show('tokens', row.original.address)}
+                    className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
+                  >
+                    {value}
+                  </code>
+                </HoverCardTrigger>
+                <HoverCardContent>what would you like to see here?</HoverCardContent>
+              </HoverCard>
               <a
                 href={`https://tama.meme/token/${row.original.address}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {value}
+                <ExternalLinkIcon className="h-4" />
               </a>
-            </code>
+            </div>
           )
         },
       },
@@ -130,25 +144,12 @@ const TokenList = () => {
     setPageSize,
     refineCore: {
       tableQueryResult: { refetch, isLoading },
+      setFilters,
     },
   } = useTable({
     columns,
     refineCoreProps: {
       resource: RoutesEnum.TOKENS,
-      filters: {
-        initial: [
-          {
-            field: 'sortBy',
-            operator: 'eq',
-            value: 'createdAt',
-          },
-          {
-            field: 'sortDirection',
-            operator: 'eq',
-            value: 'desc',
-          },
-        ],
-      },
     },
   })
 
@@ -163,6 +164,18 @@ const TokenList = () => {
 
   useEffect(() => {
     setPageSize(isMobile ? 15 : 20)
+    setFilters([
+      {
+        field: 'sortBy',
+        operator: 'eq',
+        value: 'lastMcap',
+      },
+      {
+        field: 'sortDirection',
+        operator: 'eq',
+        value: 'desc',
+      },
+    ])
   }, [isMobile])
 
   const excludeColumnsInMobile = ['description', 'name', 'address', 'user']
@@ -175,7 +188,7 @@ const TokenList = () => {
             Just a broke dev using free hosting service. Spin-up can take as long as 30 seconds. Please be patient ❤️
           </p>
         )}
-        <small className="text-sm font-medium leading-none">Navigate Ronin's meme coins easily.</small>
+        <small className="text-sm font-medium leading-none">Navigate Ronin meme coins easily.</small>
         <p className="text-xs">Updates automatically every minute. Never miss a pump.</p>
         <p className="text-sm text-muted-foreground">{`last updated: ${new Date().toLocaleString('en-US')}`}</p>
         <Table className="w-full table-fixed border-collapse border text-xs">

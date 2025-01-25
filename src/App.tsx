@@ -3,7 +3,6 @@ import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar'
 
 import routerBindings, { CatchAllNavigate, DocumentTitleHandler, NavigateToResource, UnsavedChangesNotifier } from '@refinedev/react-router'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router'
-import './App.css'
 import { authProvider } from './authProvider'
 import Layout from './components/layout'
 import { ThemeProvider } from './components/theme-provider'
@@ -54,7 +53,7 @@ function App() {
                   </Authenticated>
                 }
               >
-                <Route element={<NavigateToResource resource="/" />} />
+                <Route element={<NavigateToResource resource="/tokens" />} />
                 <Route path="/tokens">
                   <Route
                     index

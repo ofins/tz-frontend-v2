@@ -1,6 +1,7 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import { TooltipProvider } from './components/ui/tooltip'
 import './globals.css'
 
 const container = document.getElementById('root') as HTMLElement
@@ -8,6 +9,8 @@ const root = createRoot(container)
 
 root.render(
   <React.StrictMode>
-    <App />
+    <TooltipProvider>
+      <App />
+    </TooltipProvider>
   </React.StrictMode>
 )

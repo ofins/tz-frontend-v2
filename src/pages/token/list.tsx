@@ -11,13 +11,15 @@ import {
 } from '@/components/ui/pagination'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { RoutesEnum } from '@/enums/routes.enum'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { MC_CONSTANT } from '@/utils/common'
 import { useNavigation } from '@refinedev/core'
 import { useTable } from '@refinedev/react-table'
 import { type ColumnDef, flexRender } from '@tanstack/react-table'
-import { ExternalLinkIcon, Flame, Moon, Rocket } from 'lucide-react'
+import clsx from 'clsx'
+import { ArrowBigUp, ExternalLinkIcon, Flame, Moon, Rocket } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import CreatorInfo from './creator-info'
 
@@ -29,8 +31,10 @@ interface TokenListProps {
   imageUrl: string
   lastMcap: number
   createdAt: string
+  launchTime: number
   User: { name: string; address: string }
 }
+const excludeColumnsInMobile = ['description', 'name', 'address', 'user']
 
 const TokenList = () => {
   const isMobile = useIsMobile()
@@ -48,13 +52,16 @@ const TokenList = () => {
           return (
             <div className="flex justify-between">
               <HoverCard>
-                <HoverCardTrigger>
+                <HoverCardTrigger className="flex items-center">
                   <code
                     onClick={() => show('tokens', row.original.address)}
                     className="relative cursor-pointer rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
                   >
                     {value}
                   </code>
+                  {row.original.lastMcap * MC_CONSTANT > 7000 && Date.now() - Number(row.original.createdAt) < 600000 && (
+                    <ArrowBigUp className="h-5 text-destructive" />
+                  )}
                 </HoverCardTrigger>
                 <HoverCardContent>what would you like to see here?</HoverCardContent>
               </HoverCard>
@@ -63,7 +70,14 @@ const TokenList = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <ExternalLinkIcon className="h-4" />
+                <Tooltip>
+                  <TooltipTrigger>
+                    <ExternalLinkIcon className="h-4" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">Tama.meme</p>
+                  </TooltipContent>
+                </Tooltip>
               </a>
             </div>
           )
@@ -83,6 +97,19 @@ const TokenList = () => {
         id: 'description',
         header: 'Description',
         accessorKey: 'description',
+        cell: ({ getValue }) => {
+          const value = getValue() as string
+          return (
+            <Tooltip>
+              <TooltipTrigger>
+                <p className="w-[200px] truncate">{value}</p>
+              </TooltipTrigger>
+              <TooltipContent className="w-fit max-w-[200px]">
+                <p className="text-xs">{value}</p>
+              </TooltipContent>
+            </Tooltip>
+          )
+        },
       },
       {
         id: 'imageUrl',
@@ -114,7 +141,7 @@ const TokenList = () => {
           const value = Number(((getValue() as number) * MC_CONSTANT).toFixed())
           return (
             <div className="flex items-center justify-start overflow-hidden truncate whitespace-nowrap">
-              {value}
+              ${value}
               {value > 10000 && <Flame className="h-4" />}
               {value > 30000 && <Rocket className="h-4" />}
               {value > 50000 && <Moon className="h-4" />}
@@ -161,7 +188,7 @@ const TokenList = () => {
     previousPage,
     setPageSize,
     refineCore: {
-      tableQueryResult: { refetch, isLoading },
+      tableQueryResult: { refetch, isLoading, data },
       setFilters,
       filters,
     },
@@ -175,7 +202,13 @@ const TokenList = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       refetch()
-      console.log('refetch', new Date().getTime())
+
+      // data?.data.map((token: TokenListProps) => {
+      //   console.log(token.ticker, Date.now() - Number(token.createdAt))
+      //   if (Date.now() - Number(token.createdAt) < 600000 && token.lastMcap * MC_CONSTANT > 7000) {
+      //     toast(`🚀 Is ${token.ticker} the next CAG?!`)
+      //   }
+      // })
     }, 60000)
 
     return () => clearInterval(interval)
@@ -196,8 +229,6 @@ const TokenList = () => {
       },
     ])
   }, [isMobile])
-
-  const excludeColumnsInMobile = ['description', 'name', 'address', 'user']
 
   const handleSearch = () => {
     setFilters([
@@ -275,7 +306,7 @@ const TokenList = () => {
                     return (
                       <TableCell
                         key={cell.id}
-                        className="overflow-hidden truncate whitespace-nowrap"
+                        className={clsx('overflow-hidden truncate whitespace-nowrap')}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>

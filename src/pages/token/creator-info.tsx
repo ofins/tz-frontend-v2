@@ -1,3 +1,4 @@
+import ImageWrapper from '@/components/image-wrapper'
 import { Avatar } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -50,14 +51,9 @@ const CreatorInfo = ({ address }: { address?: string }) => {
               key={idx}
             >
               <Avatar className="h-7 w-7">
-                <img
-                  src={`https://black-changing-salmon-202.mypinata.cloud/ipfs/${holder.token.imageUrl}`}
-                  alt={`Token Image: ${holder.token.id}`}
-                  onError={(e) => {
-                    e.currentTarget.src = ''
-                    e.currentTarget.alt = 'No Image'
-                    e.currentTarget.style.display = 'none'
-                  }}
+                <ImageWrapper
+                  url={`https://black-changing-salmon-202.mypinata.cloud/ipfs/${holder.token.imageUrl}`}
+                  className="h-5"
                 />
               </Avatar>
               <h3>{holder.token.name}</h3>

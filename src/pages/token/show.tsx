@@ -1,3 +1,4 @@
+import ImageWrapper from '@/components/image-wrapper'
 import { useTheme } from '@/components/theme-provider'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
@@ -80,15 +81,9 @@ const TokenShow = () => {
             </div>
             <div className="mt-2 flex flex-col gap-1">
               {data && (
-                <img
-                  src={`https://black-changing-salmon-202.mypinata.cloud/ipfs/${data?.data.imageUrl}`}
-                  alt={`Token Image: ${data?.data.id}`}
+                <ImageWrapper
+                  url={`https://black-changing-salmon-202.mypinata.cloud/ipfs/${data?.data.imageUrl}`}
                   className="max-w-[200px] rounded-md"
-                  onError={(e) => {
-                    e.currentTarget.src = ''
-                    e.currentTarget.alt = 'No Image'
-                    e.currentTarget.style.display = 'none'
-                  }}
                 />
               )}
               <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-primary">{data?.data.name}</h4>

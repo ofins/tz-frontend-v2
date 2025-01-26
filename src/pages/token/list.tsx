@@ -1,3 +1,4 @@
+import ImageWrapper from '@/components/image-wrapper'
 import LinkWrapper from '@/components/link-wrapper'
 import {
   AlertDialog,
@@ -48,7 +49,7 @@ interface TokenListProps {
   launchTime: number
   User: { name: string; address: string }
 }
-const excludeColumnsInMobile = ['description', 'name', 'address', 'user']
+const excludeColumnsInMobile = ['description', 'name', 'address', 'user', 'createdAt']
 
 const TokenList = () => {
   const isMobile = useIsMobile()
@@ -96,14 +97,18 @@ const TokenList = () => {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+              <ImageWrapper
+                url={`https://black-changing-salmon-202.mypinata.cloud/ipfs/${row.original.imageUrl}`}
+                className="h-5 min-w-5 max-w-5"
+              />
               <HoverCard>
                 <HoverCardTrigger className="flex items-center">
-                  <code
-                    className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
+                  <p
+                    className="relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
                     onClick={() => show('tokens', row.original.address)}
                   >
                     {value}
-                  </code>
+                  </p>
                   {row.original.lastMcap * MC_CONSTANT > 7000 && Date.now() - Number(row.original.createdAt) < 600000 && (
                     <ArrowBigUp className="h-5 text-destructive" />
                   )}
@@ -164,28 +169,6 @@ const TokenList = () => {
                 <p className="text-xs">{value}</p>
               </TooltipContent>
             </Tooltip>
-          )
-        },
-      },
-      {
-        id: 'imageUrl',
-        header: 'Avatar',
-        accessorKey: 'imageUrl',
-        cell: ({ getValue }) => {
-          const value = getValue()
-          return value ? (
-            <img
-              src={`https://black-changing-salmon-202.mypinata.cloud/ipfs/${value}`}
-              alt={`Token Image: ${value}`}
-              className="h-5"
-              onError={(e) => {
-                e.currentTarget.src = ''
-                e.currentTarget.alt = 'No Image'
-                e.currentTarget.style.display = 'none'
-              }}
-            />
-          ) : (
-            'No Image'
           )
         },
       },
@@ -257,13 +240,6 @@ const TokenList = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       refetch()
-
-      // data?.data.map((token: TokenListProps) => {
-      //   console.log(token.ticker, Date.now() - Number(token.createdAt))
-      //   if (Date.now() - Number(token.createdAt) < 600000 && token.lastMcap * MC_CONSTANT > 7000) {
-      //     toast(`🚀 Is ${token.ticker} the next CAG?!`)
-      //   }
-      // })
     }, 60000)
 
     return () => clearInterval(interval)

@@ -27,20 +27,24 @@ const CreatorInfo = ({ address }: { address?: string }) => {
       },
     ],
   })
+  const removeSmallBal = data?.data.filter((holder) => Number(holder.balance) * RON_CONSTANT > 1) ?? []
+  const allBalance = removeSmallBal.reduce((acc, curr) => Number(acc) + Number(curr.balance), 0) * RON_CONSTANT
 
   return (
     <Card className="h-fit w-full overflow-hidden p-3">
       {!isLoading ? (
         <>
-          <h1 className="text-lg font-semibold">Creator Info</h1>
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-primary">{data?.data[0].holderAddress.name}</h4>
-          <code className="h-fit rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
+          <div className="flex items-center gap-1">
+            <h1 className="mb-1 scroll-m-20 text-xl font-semibold tracking-tight text-primary">{data?.data[0].holderAddress.name} </h1>
+            {allBalance > 5000 ? '🐋' : allBalance > 1000 ? '🦈' : ''}
+          </div>
+          <code className="h-fit rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-semibold">
             {address}
             {/* {holder?.data?.items?.} */}
           </code>
 
           <h2 className="my-3">{"Top HODLs'"}</h2>
-          {data?.data.map((holder, idx) => (
+          {removeSmallBal?.map((holder, idx) => (
             <div
               className="mb-1 flex items-center justify-start gap-2"
               key={idx}

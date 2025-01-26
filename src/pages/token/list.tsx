@@ -1,3 +1,4 @@
+import LinkWrapper from '@/components/link-wrapper'
 import { Button } from '@/components/ui/button'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Input } from '@/components/ui/input'
@@ -10,6 +11,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { RoutesEnum } from '@/enums/routes.enum'
@@ -50,35 +52,30 @@ const TokenList = () => {
         cell: ({ getValue, row }) => {
           const value = getValue() as string
           return (
-            <div className="flex justify-between">
+            <div
+              className="flex cursor-pointer items-center justify-between"
+              onClick={() => show('tokens', row.original.address)}
+            >
               <HoverCard>
                 <HoverCardTrigger className="flex items-center">
-                  <code
-                    onClick={() => show('tokens', row.original.address)}
-                    className="relative cursor-pointer rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-                  >
-                    {value}
-                  </code>
+                  <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">{value}</code>
                   {row.original.lastMcap * MC_CONSTANT > 7000 && Date.now() - Number(row.original.createdAt) < 600000 && (
                     <ArrowBigUp className="h-5 text-destructive" />
                   )}
                 </HoverCardTrigger>
                 <HoverCardContent>what would you like to see here?</HoverCardContent>
               </HoverCard>
-              <a
-                href={`https://tama.meme/token/${row.original.address}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+
+              <LinkWrapper link={`https://tama.meme/token/${row.original.address}`}>
                 <Tooltip>
                   <TooltipTrigger>
-                    <ExternalLinkIcon className="h-4" />
+                    <ExternalLinkIcon className="h-4 hover:text-primary" />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="text-xs">Tama.meme</p>
                   </TooltipContent>
                 </Tooltip>
-              </a>
+              </LinkWrapper>
             </div>
           )
         },
@@ -87,6 +84,17 @@ const TokenList = () => {
         id: 'address',
         header: 'Address',
         accessorKey: 'address',
+        cell: ({ getValue }) => {
+          const value = getValue() as string
+          return (
+            <code
+              className="cursor-pointer truncate"
+              onClick={() => show('tokens', value)}
+            >
+              {value}
+            </code>
+          )
+        },
       },
       {
         id: 'name',
@@ -102,7 +110,7 @@ const TokenList = () => {
           return (
             <Tooltip>
               <TooltipTrigger>
-                <p className="w-[200px] truncate">{value}</p>
+                <p className="w-[200px] cursor-auto truncate">{value}</p>
               </TooltipTrigger>
               <TooltipContent className="w-fit max-w-[200px]">
                 <p className="text-xs">{value}</p>
@@ -188,7 +196,7 @@ const TokenList = () => {
     previousPage,
     setPageSize,
     refineCore: {
-      tableQueryResult: { refetch, isLoading, data },
+      tableQueryResult: { refetch, isLoading },
       setFilters,
       filters,
     },
@@ -215,7 +223,7 @@ const TokenList = () => {
   })
 
   useEffect(() => {
-    setPageSize(isMobile ? 15 : 20)
+    setPageSize(isMobile ? 15 : 15)
     setFilters([
       {
         field: 'sortBy',
@@ -243,14 +251,9 @@ const TokenList = () => {
   return (
     <div className="max-w-screen w-full overflow-x-auto">
       <div className="mx-auto w-[99%] space-y-4">
-        {isLoading && (
-          <p className="text-md font-semibold">
-            Just a broke dev using free hosting service. Spin-up can take as long as 30 seconds. Please be patient ❤️
-          </p>
-        )}
-        <small className="text-sm font-medium leading-none">Navigate Ronin meme coins easily.</small>
-        <p className="text-xs">Updates automatically every minute. Never miss a pump. 🚀</p>
-        <p className="text-sm text-muted-foreground">{`last updated: ${new Date().toLocaleString('en-US')}`}</p>
+        <span className="text-sm font-medium leading-none text-primary">Navigate Ronin meme coins easily.</span>{' '}
+        <span className="text-xs">Updates automatically every minute. Never miss a pump. 🚀</span>
+        <span className="text-sm text-muted-foreground">{`last updated: ${new Date().toLocaleString('en-US')}`}</span>
         <div className="flex space-x-2">
           <Select
             value={filters?.find((f) => (f as any).field === 'sortBy')?.value}
@@ -283,49 +286,59 @@ const TokenList = () => {
           />
           <Button onClick={() => handleSearch()}>Search</Button>
         </div>
-        <Table className="w-full table-fixed border-collapse border text-xs">
-          <TableCaption>Most recent launched tokens</TableCaption>
-          <TableHeader>
-            {getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  if (isMobile && excludeColumnsInMobile.includes(header.id)) return
-                  return <TableHead key={header.id}>{flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {getRowModel().rows.length > 0 ? (
-              getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
-                    if (isMobile && excludeColumnsInMobile.includes(cell.column.id)) {
-                      return
-                    }
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        className={clsx('overflow-hidden truncate whitespace-nowrap')}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    )
+        {!isLoading ? (
+          <Table className="w-full table-fixed border-collapse border text-xs">
+            <TableCaption>Most recent launched tokens</TableCaption>
+            <TableHeader>
+              {getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    if (isMobile && excludeColumnsInMobile.includes(header.id)) return
+                    return <TableHead key={header.id}>{flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
                   })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={getHeaderGroups()[0]?.headers.length || 1}
-                  className="text-center"
-                >
-                  No data available
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {getRowModel().rows.length > 0 ? (
+                getRowModel().rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell) => {
+                      if (isMobile && excludeColumnsInMobile.includes(cell.column.id)) {
+                        return
+                      }
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={clsx('overflow-hidden truncate whitespace-nowrap')}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={getHeaderGroups()[0]?.headers.length || 1}
+                    className="text-center"
+                  >
+                    No data available
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        ) : (
+          <div className="flex flex-col space-y-3">
+            <Skeleton className="h-[728px] w-full rounded-xl">
+              <p className="flex h-full items-center justify-center text-lg font-semibold">
+                Currently do not make enough profit to host on paid-service. Spin-up can take as long as 30 seconds. Please be patient ❤️
+              </p>
+            </Skeleton>
+          </div>
+        )}
         <Pagination>
           <PaginationContent>
             <PaginationItem>

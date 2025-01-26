@@ -1,6 +1,7 @@
 import ImageWrapper from '@/components/image-wrapper'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { useGetMultiTokenList } from '@/services/watchlist'
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import clsx from 'clsx'
@@ -26,8 +27,10 @@ export const getWatchlistAddresses = () => {
 }
 
 const columnHelper = createColumnHelper<GeckoTokenListProps>()
+const excludeColumnsInMobile = ['total_supply', 'volume_usd', 'name']
 
 const WatchList = () => {
+  const isMobile = useIsMobile()
   const [data, setData] = useState<GeckoTokenListProps[]>([])
 
   const columns = useMemo(
@@ -54,7 +57,7 @@ const WatchList = () => {
       columnHelper.accessor((row) => row.attributes.price_usd, {
         id: 'price_usd',
         header: 'Price (USD)',
-        cell: ({ getValue }) => `$${Number(getValue()).toFixed(10)}`,
+        cell: ({ getValue }) => <span className="min-w-[100x w-fit">{Number(getValue()).toFixed(10)}</span>,
       }),
       columnHelper.accessor((row) => row.attributes.market_cap_usd, {
         id: 'market_cap_usd',
@@ -108,6 +111,8 @@ const WatchList = () => {
     }
   }, [tokenData])
 
+  if (!getWatchlistAddresses().length) return <div>Your watchlist is empty. Add tokens first.</div>
+
   return (
     <div className="mx-auto w-[99%] space-y-4">
       {!isLoading ? (
@@ -118,9 +123,10 @@ const WatchList = () => {
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>{flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  if (isMobile && excludeColumnsInMobile.includes(header.id)) return
+                  return <TableHead key={header.id}>{flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
+                })}
               </TableRow>
             ))}
           </TableHeader>
@@ -128,14 +134,19 @@ const WatchList = () => {
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={clsx('overflow-hidden truncate whitespace-nowrap')}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    if (isMobile && excludeColumnsInMobile.includes(cell.column.id)) {
+                      return
+                    }
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        className={clsx('overflow-hidden truncate whitespace-nowrap')}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    )
+                  })}
                 </TableRow>
               ))
             ) : (

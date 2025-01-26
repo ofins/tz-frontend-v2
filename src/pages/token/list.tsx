@@ -34,6 +34,7 @@ import clsx from 'clsx'
 import { ArrowBigUp, ExternalLinkIcon, Flame, Moon, Rocket, Star } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
+import { getWatchlistAddresses } from '../watchlist/list'
 import CreatorInfo from './creator-info'
 
 interface TokenListProps {
@@ -48,11 +49,6 @@ interface TokenListProps {
   User: { name: string; address: string }
 }
 const excludeColumnsInMobile = ['description', 'name', 'address', 'user']
-
-const getWatchlistAddresses = () => {
-  const addresses = localStorage.getItem('watchlist')
-  return addresses ? JSON.parse(addresses) : []
-}
 
 const TokenList = () => {
   const isMobile = useIsMobile()
@@ -75,14 +71,11 @@ const TokenList = () => {
           const value = getValue() as string
           const isStar = watchlist.includes(row.original.address)
           return (
-            <div
-              className="flex h-full cursor-pointer items-center justify-start gap-3"
-              onClick={() => show('tokens', row.original.address)}
-            >
+            <div className="flex h-full cursor-pointer items-center justify-start gap-3">
               <AlertDialog>
-                <AlertDialogTrigger onClick={(e) => e.stopPropagation()}>
+                <AlertDialogTrigger>
                   <div className="h-full w-fit">
-                    <Star className={twMerge(clsx('h-3', { 'opacity-10 hover:opacity-100': !isStar }))} />
+                    <Star className={twMerge(clsx('h-4 hover:scale-110', { 'opacity-10 hover:opacity-100': !isStar }))} />
                   </div>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -94,8 +87,7 @@ const TokenList = () => {
                   <AlertDialogFooter>
                     <AlertDialogCancel>No</AlertDialogCancel>
                     <AlertDialogAction
-                      onClick={(e) => {
-                        e.stopPropagation()
+                      onClick={() => {
                         handleWatchlist(row.original.address)
                       }}
                     >
@@ -106,7 +98,12 @@ const TokenList = () => {
               </AlertDialog>
               <HoverCard>
                 <HoverCardTrigger className="flex items-center">
-                  <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">{value}</code>
+                  <code
+                    className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
+                    onClick={() => show('tokens', row.original.address)}
+                  >
+                    {value}
+                  </code>
                   {row.original.lastMcap * MC_CONSTANT > 7000 && Date.now() - Number(row.original.createdAt) < 600000 && (
                     <ArrowBigUp className="h-5 text-destructive" />
                   )}

@@ -1,4 +1,14 @@
 import LinkWrapper from '@/components/link-wrapper'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Input } from '@/components/ui/input'
@@ -21,8 +31,9 @@ import { useNavigation } from '@refinedev/core'
 import { useTable } from '@refinedev/react-table'
 import { type ColumnDef, flexRender } from '@tanstack/react-table'
 import clsx from 'clsx'
-import { ArrowBigUp, ExternalLinkIcon, Flame, Moon, Rocket } from 'lucide-react'
+import { ArrowBigUp, ExternalLinkIcon, Flame, Moon, Rocket, Star } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 import CreatorInfo from './creator-info'
 
 interface TokenListProps {
@@ -38,24 +49,61 @@ interface TokenListProps {
 }
 const excludeColumnsInMobile = ['description', 'name', 'address', 'user']
 
+const getWatchlistAddresses = () => {
+  const addresses = localStorage.getItem('watchlist')
+  return addresses ? JSON.parse(addresses) : []
+}
+
 const TokenList = () => {
   const isMobile = useIsMobile()
   const { show } = useNavigation()
   const [searchTerm, setSearchTerm] = useState('')
+  const starredAddresses = getWatchlistAddresses()
+  const [watchlist, setWatchlist] = useState<string[]>(starredAddresses)
 
-  const columns = useMemo<ColumnDef<TokenListProps>[]>(
-    () => [
+  const handleWatchlist = (address: string) => {
+    setWatchlist((prev) => (prev.includes(address) ? prev.filter((o) => o !== address) : [...prev, address]))
+  }
+
+  const columns = useMemo<ColumnDef<TokenListProps>[]>(() => {
+    return [
       {
         id: 'ticker',
         header: 'Ticker',
         accessorKey: 'ticker',
         cell: ({ getValue, row }) => {
           const value = getValue() as string
+          const isStar = watchlist.includes(row.original.address)
           return (
             <div
-              className="flex cursor-pointer items-center justify-between"
+              className="flex h-full cursor-pointer items-center justify-start gap-3"
               onClick={() => show('tokens', row.original.address)}
             >
+              <AlertDialog>
+                <AlertDialogTrigger onClick={(e) => e.stopPropagation()}>
+                  <div className="h-full w-fit">
+                    <Star className={twMerge(clsx('h-3', { 'opacity-10 hover:opacity-100': !isStar }))} />
+                  </div>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      {isStar ? `Remove ${row.original.ticker} from your watchlist?` : `Add ${row.original.ticker} to your watchlist?`}
+                    </AlertDialogTitle>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>No</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleWatchlist(row.original.address)
+                      }}
+                    >
+                      Yes
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
               <HoverCard>
                 <HoverCardTrigger className="flex items-center">
                   <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">{value}</code>
@@ -66,7 +114,10 @@ const TokenList = () => {
                 <HoverCardContent>what would you like to see here?</HoverCardContent>
               </HoverCard>
 
-              <LinkWrapper link={`https://tama.meme/token/${row.original.address}`}>
+              <LinkWrapper
+                link={`https://tama.meme/token/${row.original.address}`}
+                className="ml-auto"
+              >
                 <Tooltip>
                   <TooltipTrigger>
                     <ExternalLinkIcon className="h-4 hover:text-primary" />
@@ -184,9 +235,8 @@ const TokenList = () => {
           )
         },
       },
-    ],
-    [isMobile]
-  )
+    ]
+  }, [isMobile, watchlist])
 
   const {
     getHeaderGroups,
@@ -236,7 +286,8 @@ const TokenList = () => {
         value: 'desc',
       },
     ])
-  }, [isMobile])
+    localStorage.setItem('watchlist', JSON.stringify(watchlist))
+  }, [isMobile, watchlist])
 
   const handleSearch = () => {
     setFilters([
@@ -251,7 +302,6 @@ const TokenList = () => {
   return (
     <div className="max-w-screen w-full overflow-x-auto">
       <div className="mx-auto w-[99%] space-y-4">
-        <span className="text-sm font-medium leading-none text-primary">Navigate Ronin meme coins easily.</span>{' '}
         <span className="text-xs">Updates automatically every minute. Never miss a pump. 🚀</span>
         <span className="text-sm text-muted-foreground">{`last updated: ${new Date().toLocaleString('en-US')}`}</span>
         <div className="flex space-x-2">
@@ -288,7 +338,9 @@ const TokenList = () => {
         </div>
         {!isLoading ? (
           <Table className="w-full table-fixed border-collapse border text-xs">
-            <TableCaption>Most recent launched tokens</TableCaption>
+            <TableCaption>
+              The best platform to browse <span className="text-sm font-medium leading-none text-primary">Ronin Network</span> meme coins.
+            </TableCaption>
             <TableHeader>
               {getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>

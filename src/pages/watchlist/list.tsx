@@ -94,7 +94,7 @@ const WatchList = () => {
   useEffect(() => {
     if (tokenData) {
       setData(
-        tokenData.data.data.map((item: GeckoTokenListProps) => ({
+        tokenData.data.data.data.map((item: GeckoTokenListProps) => ({
           attributes: {
             name: item.attributes.name,
             symbol: item.attributes.symbol,

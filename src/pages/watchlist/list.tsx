@@ -89,7 +89,7 @@ const WatchList = () => {
     getCoreRowModel: getCoreRowModel(),
   })
 
-  const { data: tokenData, isLoading } = useGetMultiTokenList({ addresses: getWatchlistAddresses().join(','), network: 'ronin' })
+  const { data: tokenData, isLoading } = useGetMultiTokenList({ addresses: getWatchlistAddresses(), network: 'ronin' })
 
   useEffect(() => {
     if (tokenData) {

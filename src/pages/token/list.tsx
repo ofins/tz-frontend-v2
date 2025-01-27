@@ -35,6 +35,7 @@ import clsx from 'clsx'
 import { ArrowBigUp, ExternalLinkIcon, Flame, Moon, Rocket, Star } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
+import rugger from '../../data/rugger.json'
 import { getWatchlistAddresses } from '../watchlist/list'
 import CreatorInfo from './creator-info'
 
@@ -207,6 +208,7 @@ const TokenList = () => {
             <HoverCard>
               <HoverCardTrigger>
                 <span>{value}</span>
+                <span className="pb-1 text-lg">{rugger.includes(row.original.User.address || '') ? '⚠️' : ''}</span>
               </HoverCardTrigger>
               <HoverCardContent className="w-fit">
                 <CreatorInfo address={row.original.User.address} />

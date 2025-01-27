@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { RoutesEnum } from '@/enums/routes.enum'
 import { RON_CONSTANT } from '@/utils/common'
 import { useList } from '@refinedev/core'
+import rugger from '../../data/rugger.json'
 
 const CreatorInfo = ({ address }: { address?: string }) => {
   const { data, isLoading } = useList({
@@ -30,7 +31,7 @@ const CreatorInfo = ({ address }: { address?: string }) => {
   })
   const removeSmallBal = data?.data.filter((holder) => Number(holder.balance) * RON_CONSTANT > 1) ?? []
   const allBalance = removeSmallBal.reduce((acc, curr) => Number(acc) + Number(curr.balance), 0) * RON_CONSTANT
-
+  const isRugger = rugger.includes(address || '')
   return (
     <Card className="h-fit w-full overflow-hidden p-3">
       {!isLoading ? (
@@ -38,11 +39,11 @@ const CreatorInfo = ({ address }: { address?: string }) => {
           <div className="flex items-center gap-1">
             <h1 className="mb-1 scroll-m-20 text-xl font-semibold tracking-tight text-primary">{data?.data[0].holderAddress.name} </h1>
             {allBalance > 5000 ? '🐋' : allBalance > 1000 ? '🦈' : ''}
+            <span className="pb-1 text-xs text-destructive">
+              {isRugger ? '⚠️ Bad practice detected from user. Please be cautious.' : ''}
+            </span>
           </div>
-          <code className="h-fit rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-semibold">
-            {address}
-            {/* {holder?.data?.items?.} */}
-          </code>
+          <code className="h-fit rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-semibold">{address}</code>
 
           <h2 className="my-3">{"Top HODLs'"}</h2>
           {removeSmallBal?.map((holder, idx) => (

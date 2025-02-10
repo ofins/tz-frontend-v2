@@ -1,12 +1,3 @@
-# TamaZoo-frontend-v2
-
-<div align="center" style="margin: 30px;">
-    <a href="https://tamazoo.vercel.app">
-    <img alt="refine logo" src="https://black-changing-salmon-202.mypinata.cloud/ipfs/QmS3rvKkM5HW2ZgS4BLJtBUMK6aTq9RLPHQuThf65SMfPg?img-width=128&img-height=128&img-dpr=2&img-onerror=redirect">
-    </a>
-</div>
-<br/>
-
 This [Refine](https://github.com/refinedev/refine) project was generated with [create refine-app](https://github.com/refinedev/refine/tree/master/packages/create-refine-app).
 
 ## Getting Started

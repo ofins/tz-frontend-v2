@@ -6,25 +6,26 @@ const ProfileCard = () => {
     <div className="flex justify-between space-x-4">
       <Avatar>
         <AvatarImage src="https://cyberkongz.fra1.cdn.digitaloceanspaces.com/genkai/public/19821/19821_public.jpg" />
-        <AvatarFallback>ofins.ron</AvatarFallback>
+        <AvatarFallback>{import.meta.env.VITE_PROFILE_NAME}</AvatarFallback>
       </Avatar>
       <div className="space-y-1">
         <a
-          href="https://x.com/ofinsNFT"
+          href={import.meta.env.VITE_X_PROFILE_URL}
           target="_blank"
           rel="noreferrer"
           className="text-sm font-semibold"
         >
-          @ofins.ron
+          @{import.meta.env.VITE_PROFILE_NAME}
         </a>
         <p className="text-xs">
-          Welcome to <span className="text-md text-primary">Tama Zoo</span> – created and maintained by ofins.ron
+          Welcome to <span className="text-md text-primary">Tama Zoo</span> – created and maintained by {import.meta.env.VITE_PROFILE_NAME}{' '}
+          🦙
         </p>
         <p className="text-xs text-destructive">Issues or suggestions? DM me on X!</p>
         <p className="text-xs text-muted-foreground">
           If you like it, buy me a{' '}
           <a
-            href={`https://marketplace.skymavis.com/account/${import.meta.env.VITE_OFINS_RON_ADDRESS}`}
+            href={`https://marketplace.skymavis.com/account/${import.meta.env.VITE_PROFILE_ADDRESS}`}
             target="_blank"
             rel="noreferrer"
             className="underline"

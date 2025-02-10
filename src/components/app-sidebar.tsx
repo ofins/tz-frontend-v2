@@ -76,12 +76,12 @@ export function AppSidebar() {
                     <p className="leading-7">
                       Built by{' '}
                       <a
-                        href="https://x.com/ofinsNFT"
+                        href={import.meta.env.VITE_X_PROFILE_URL}
                         target="_blank"
                         rel="noreferrer"
                         className="text-primary"
                       >
-                        ofins.ron
+                        {import.meta.env.VITE_PROFILE_NAME}
                       </a>{' '}
                       🦙
                     </p>

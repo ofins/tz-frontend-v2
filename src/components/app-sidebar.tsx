@@ -73,18 +73,7 @@ export function AppSidebar() {
                 <ModeToggle />
                 <HoverCard>
                   <HoverCardTrigger asChild>
-                    <p className="leading-7">
-                      Built by{' '}
-                      <a
-                        href={import.meta.env.VITE_X_PROFILE_URL}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-primary"
-                      >
-                        {import.meta.env.VITE_PROFILE_NAME}
-                      </a>{' '}
-                      🦙
-                    </p>
+                    <p className="leading-7">Built by {import.meta.env.VITE_PROFILE_NAME} 🦙</p>
                   </HoverCardTrigger>
                   <HoverCardContent className="w-80">
                     <ProfileCard />

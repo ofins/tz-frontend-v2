@@ -73,7 +73,7 @@ const ReactTableWrapper = ({ isLoading, getHeaderGroups, getRowModel, excludeCol
     <div className="flex flex-col space-y-3">
       <Skeleton className="h-[728px] w-full rounded-xl">
         <p className="flex h-full items-center justify-center text-lg font-semibold">
-          Currently do not make enough profit to host on paid-service. Spin-up can take as long as 30 seconds. Please be patient ❤️
+          Spin-up can take as long as 30 seconds. Please be patient ❤️
         </p>
       </Skeleton>
     </div>
